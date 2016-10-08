@@ -2,83 +2,38 @@ extends layout
 
 block head
 	link(href='/css/question.css', rel='stylesheet')
+	script.
+		$(document).ready(function() 
+		{
+			var correct = window.sessionStorage['current.correctAnswers'];
+			var total = window.sessionStorage['current.nbQuestions'];
+			var domaine = window.sessionStorage['current.domain'];
+			$('#result').text('Vous avez obtenu ' + correct + ' bonne réponse(s) sur un total de ' + total + ' question(s).');
+
+			saveResults(correct, total, domaine);
+			displayStatistics();
+		});
 
 block content
 	article(id='main-wrapper')
 		h1 Examen
-		
-		section#results
-			div#results-content
-				h1 Resultats
-				table
-					tr
-						td #1
-						td.results-icon 
-							img(src='/images/correct.png')
-					tr
-						td #2
-						td.results-icon 
-							img(src='/images/cross.png')
-					tr
-						td #3
-						td.results-icon 
-							img(src='/images/correct.png')
-					tr
-						td #4
-						td.results-icon 
-							img(src='/images/correct.png')
-					tr
-						td #5
-						td.results-icon 
-							img(src='/images/correct.png')
-					tr.total
-						td Total
-						td 4/5
 
 		section#question
 			h1 Examen Terminé
-			p Note Finale - 75%
-		
-
+			span#result
+			div#clear
+			section#quiz-navig
+				div#next.quiz-navig-btn
+					a(href='/mypage') 
+						div Terminer
+				div#closer
 		section#statistics
-				div#statistics-content
-					h1 Statistiques
-					table
-						tr
-							td Test #1
-							td 75%
-						tr
-							td Test #2
-							td 75%
-						tr
-							td Test #3
-							td 75%
-						tr
-							td Test #4
-							td 75%
-						tr.total
-							td Moyenne
-							td 75%
-					table
-						tr
-							td Examen #1
-							td 75%
-						tr
-							td Examen #2
-							td 75%
-						tr
-							td Examen #3
-							td 75%
-						tr
-							td Examen #4
-							td 75%
-						tr.total
-							td Moyenne
-							td 75%
-
-		div#clear
-		section#quiz-navig
-			div#next.quiz-navig-btn
-				a(href='/mypage') 
-					div > Terminer
-			div#closer
+					div#statistics-content
+						h2 Statistiques
+						h1 Tests
+						table
+								tr
+									td Total
+									td#stats-quicktests
+						h1 Examens
+						table#stats-exams-table

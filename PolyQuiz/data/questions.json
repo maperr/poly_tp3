@@ -2,7 +2,7 @@
 	{
 		"id": "0",
 		"domain": "css",
-		"queston": "css_question0",
+		"question": "css_question0",
         "answers": 
         [
         	"css_question0_answer0",
@@ -50,7 +50,7 @@
 		{
 		"id": "4",
 		"domain": "html",
-		"queston": "html_question0",
+		"question": "html_question0",
         "answers": 
         [
         	"html_question0_answer0",
@@ -97,7 +97,7 @@
 	},	{
 		"id": "8",
 		"domain": "js",
-		"queston": "js_question0",
+		"question": "js_question0",
         "answers": 
         [
         	"js_question0_answer0",
