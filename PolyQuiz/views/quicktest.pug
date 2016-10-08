@@ -5,33 +5,36 @@ block head
 	script.
 		$(document).ready(function() 
 		{	
-			var currentAnswer;
+			// drag and drop
+			var answers = $('#answer .possibleAnswer');
+			[].forEach.call(answers, function(answer) {
+				answer.addEventListener('dragstart', handleAnswerDragStart, false);
+				answer.addEventListener('dragend', handleAnswerDragEnd, false);
+			});
+
+			var answerBox = document.querySelector('#answerbox');
+			answerBox.addEventListener('drop', handleAnswerBoxDrop, false);
+			answerBox.addEventListener('dragenter', handleAnswerBoxDragEnter, false);
+			answerBox.addEventListener('dragover', handleAnswerBoxDragOver, false);
+			answerBox.addEventListener('dragleave', handleAnswerBoxDragLeave, false);
+
 			var correctQuestion = 0;
 			var questionNumber = 0;
-			
+			var answered = false;
+
 			getNewQuestion();
 
 			$('#next.quiz-navig-btn').on('click', function() {
-				var selectedAnswer = $('input[name=answer]:checked', '#answer').val();
-				if(selectedAnswer == null) {
-					return;
+				if(answered) {
+					questionNumber++
+					getNewQuestion();
 				}
-
-				if(selectedAnswer == currentAnswer) {
-					correctQuestion++;
-					saveResult(1);
-				} else {
-					saveResult(0);
-				}
-
-				questionNumber++
-				getNewQuestion();
 			});
 
 			function getNewQuestion() {
 				displayStatistics(0);
 				
-				$('#answer').trigger("reset");
+				resetQuestionStyles();
 
 			 	$('#questionProgress').text(correctQuestion + '/' + questionNumber);
 
@@ -47,7 +50,7 @@ block head
 						$('#answer1').text(response.answers[0]);
 						$('#answer2').text(response.answers[1]);
 						$('#answer3').text(response.answers[2]);
-						currentAnswer = response.correctanswerindex;
+						setCorrectAnswer(response.correctanswerindex);
 					},
 					error: function(error) {
 						alert("AJAX request failed.");
@@ -69,6 +72,31 @@ block head
 					window.localStorage['stats.quicktests.correct'] = ++correct;
 				}
 			}
+
+			function handleAnswerBoxDrop(e) {
+				$(this).css('opacity', '1');
+
+				if (e.stopPropagation) {
+					e.stopPropagation(); // Stops some browsers from redirecting.
+				}
+
+				var answers = $('#answer .possibleAnswer');
+				[].forEach.call(answers, function(answer) {
+					answer.removeAttribute('draggable');
+					answer.style.cursor = 'default';
+				});
+
+				$(this).text(e.dataTransfer.getData('text'));
+				if(e.dataTransfer.getData('index') == correctAnswer) {
+					$(this).css('border-color', 'green');
+					correctQuestion++;
+					saveResult(1);
+				} else {
+					$(this).css('border-color', 'red');
+					saveResult(0);
+				}
+				answered = true;
+			}
 		});
 
 block content
@@ -85,17 +113,15 @@ block content
 			label Domaine : 
 			span#domain domain
 			p#askedQuestion question
-			form#answer
-				input(name='answer', type='radio', value='0', required='')
-				span#answer1
-				br
-				input(name='answer', type='radio', value='1')
-				span#answer2
-				br
-				input(name='answer', type='radio', value='2')
-				span#answer3
-				br
-				// <input type="submit" value="Suivant"><br>	
+				div#answer
+					div(draggable='true', index='0').possibleAnswer#answer1
+					br
+					div(draggable='true', index='1').possibleAnswer#answer2
+					br
+					div(draggable='true', index='2').possibleAnswer#answer3
+					br
+				p Zone réponse
+				div#answerbox
 			div#clear
 			section#quiz-navig
 				div#prev.quiz-navig-btn

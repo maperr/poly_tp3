@@ -85,6 +85,12 @@
 	text-align:center;
 }
 
+#stats-button {
+    width: 90%;
+    margin: 10px;
+    cursor: pointer;
+}
+
 
 .mypage-link:hover {
 	background: #d35e5e;

@@ -5,12 +5,26 @@ block head
 	script.
 		$(document).ready(function() 
 		{
+			// drag and drop
+			var answers = $('#answer .possibleAnswer');
+			[].forEach.call(answers, function(answer) {
+				answer.addEventListener('dragstart', handleAnswerDragStart, false);
+				answer.addEventListener('dragend', handleAnswerDragEnd, false);
+			});
+
+			var answerBox = document.querySelector('#answerbox');
+			answerBox.addEventListener('drop', handleAnswerBoxDrop, false);
+			answerBox.addEventListener('dragenter', handleAnswerBoxDragEnter, false);
+			answerBox.addEventListener('dragover', handleAnswerBoxDragOver, false);
+			answerBox.addEventListener('dragleave', handleAnswerBoxDragLeave, false);
+
 			var nbQuestion = window.sessionStorage['current.nbQuestions'];
 			var domaine = window.sessionStorage['current.domain'];
 			$('#domain').text(domaine);
 
 			var correctQuestion = 0;
 			var questionNumber = 0;
+			var answered = false;
 			var currentAnswer;
 			var questions;
 			$.ajax({
@@ -19,7 +33,6 @@ block head
 				data:{domain: domaine, nbQuestions: nbQuestion},
 				success: function(response) {
 					questions = response;
-					console.log(response);
 					displayNextQuestion();
 				},
 				error: function(error) {
@@ -30,7 +43,7 @@ block head
 			function displayNextQuestion() {
 				displayStatistics(0);
 
-				$('#answer').trigger("reset");
+				resetQuestionStyles();
 
 			 	$('#questionProgress').text(correctQuestion + '/' + nbQuestion);
 			 	
@@ -42,25 +55,17 @@ block head
 				$('#answer1').text(currentQuestion.answers[0]);
 				$('#answer2').text(currentQuestion.answers[1]);
 				$('#answer3').text(currentQuestion.answers[2]);
-				currentAnswer = currentQuestion.correctanswerindex;
+				setCorrectAnswer(currentQuestion.correctanswerindex);
 			}
 
 			$('#next.quiz-navig-btn').on('click', function() {
-				var selectedAnswer = $('input[name=answer]:checked', '#answer').val();
-
-				if(selectedAnswer == null) {
-					return; // display error
-				}
-
-				if(selectedAnswer == currentAnswer) {
-					correctQuestion++;
-				} 
-
-				if(++questionNumber == nbQuestion) {
-					window.sessionStorage['current.correctAnswers'] = correctQuestion;
-					window.location = "/results";
-				} else {
-					displayNextQuestion();
+				if(answered) {
+					if(++questionNumber == nbQuestion) {
+						window.sessionStorage['current.correctAnswers'] = correctQuestion;
+						window.location = "/results";
+					} else {
+						displayNextQuestion();
+					}
 				}
 			});
 
@@ -68,6 +73,29 @@ block head
 				window.sessionStorage['current.correctAnswers'] = 0;
 				window.location = "/results";
 			});
+
+			function handleAnswerBoxDrop(e) {
+				$(this).css('opacity', '1');
+
+				if (e.stopPropagation) {
+					e.stopPropagation(); // Stops some browsers from redirecting.
+				}
+
+				var answers = $('#answer .possibleAnswer');
+				[].forEach.call(answers, function(answer) {
+					answer.removeAttribute('draggable');
+					answer.style.cursor = 'default';
+				});
+
+				$(this).text(e.dataTransfer.getData('text'));
+				if(e.dataTransfer.getData('index') == correctAnswer) {
+					$(this).css('border-color', 'green');
+					correctQuestion++;
+				} else {
+					$(this).css('border-color', 'red');
+				}
+				answered = true;
+			}
 		});
 
 block content
@@ -83,19 +111,16 @@ block content
 			h1#questionTitle
 			label Domaine : 
 			span#domain domain
-			p#askedQuestion askedQuestion
-			form#answer
-				input(name='answer', type='radio', value='0', required='')
-				span#answer1
-				br
-				input(name='answer', type='radio', value='1')
-				span#answer2
-				br
-				input(name='answer', type='radio', value='2')
-				span#answer3
-				br
-				// <input type="submit" value="Suivant"><br>
-			div#clear
+			p#askedQuestion question
+				div#answer
+					div(draggable='true', index='0').possibleAnswer#answer1
+					br
+					div(draggable='true', index='1').possibleAnswer#answer2
+					br
+					div(draggable='true', index='2').possibleAnswer#answer3
+					br
+				p Zone réponse
+				div#answerbox
 			section#quiz-navig
 				div#prev.quiz-navig-btn
 					a

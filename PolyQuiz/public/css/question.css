@@ -64,6 +64,10 @@
 	clear:both;
 }
 
+.column.over {
+  border: dashed;
+  border-color: blue;
+}
 
 
 /* QUESTION */
