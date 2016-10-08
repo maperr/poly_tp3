@@ -127,3 +127,7 @@ tr.total {
 	max-height: 32px;
 	max-width: 32px;
 }
+
+.results {
+	width: calc(100% - 232px) !important;
+}

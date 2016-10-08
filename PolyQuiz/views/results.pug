@@ -11,14 +11,14 @@ block head
 			$('#result').text('Vous avez obtenu ' + correct + ' bonne réponse(s) sur un total de ' + total + ' question(s).');
 
 			saveResults(correct, total, domaine);
-			displayStatistics();
+			displayStatistics(0);
 		});
 
 block content
 	article(id='main-wrapper')
 		h1 Examen
 
-		section#question
+		section.results#question
 			h1 Examen Terminé
 			span#result
 			div#clear
@@ -28,12 +28,24 @@ block content
 						div Terminer
 				div#closer
 		section#statistics
-					div#statistics-content
-						h2 Statistiques
-						h1 Tests
-						table
-								tr
-									td Total
-									td#stats-quicktests
-						h1 Examens
-						table#stats-exams-table
+			div#statistics-content
+				h1 Statistiques
+				h1 Tests passés
+				table
+					tr
+						td Total
+						td#stats-quicktests
+				h1 Examens passés
+				table
+					tr
+						td CSS
+						td#stats-exams-css
+					tr
+						td HTML
+						td#stats-exams-html
+					tr
+						td JS
+						td#stats-exams-js
+					tr.total
+						td Moyenne totale
+						td#stats-exams-average

@@ -7,7 +7,9 @@ block head
 		{	
 			window.sessionStorage['current.domain'] = $('#test-domain').val();
 			window.sessionStorage['current.nbQuestions'] = $('#test-nbQuestions').val();
-			displayStatistics();
+
+			displayStatistics(1);
+			displayDetails();
 
 			$('#test-domain').on('change', function() {
 				if($(this).val() == 'CSS' || 'JS' || 'HTML') {
@@ -60,16 +62,33 @@ block content
 								option(name='4') 4
 						a(class='mypage-link', href='/test')
 							div Commencer
+					section#Results.multi-cell
+						div.multi-cell-wrapper
+							div.multi-cell-header Examens Precedents
+							div.multi-cell-content
+								table#details-exams-table
 				section#statistics
 					div#statistics-content
-						h2 Statistiques
-						h1 Tests
+						h1 Statistiques
+						h1 Tests passés
 						table
 							tr
 								td Total
 								td#stats-quicktests
-						h1 Examens
-						table#stats-exams-table
+						h1 Examens passés
+						table
+							tr
+								td CSS
+								td#stats-exams-css
+							tr
+								td HTML
+								td#stats-exams-html
+							tr
+								td JS
+								td#stats-exams-js
+							tr.total
+								td Moyenne totale
+								td#stats-exams-average
 
 block modal
 	span#start.target
@@ -79,11 +98,23 @@ block modal
 			a.close-btn(href='#start')
 				div#modal-bg
 			div#details-content
-				h2 Statistiques
-				h1 Tests
+				h1 Statistiques
+				h1 Tests passés
 				table
 					tr
 						td Total
-						td#stats-quicktests
-				h1 Examens
-				table#stats-exams-table
+						td#modal-quicktests
+				h1 Examens passés
+				table
+					tr
+						td CSS
+						td#modal-exams-css
+					tr
+						td HTML
+						td#modal-exams-html
+					tr
+						td JS
+						td#modal-exams-js
+					tr.total
+						td Moyenne totale
+						td#modal-exams-average
